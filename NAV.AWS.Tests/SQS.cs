@@ -26,7 +26,7 @@ namespace NAV.AWS.Tests
 		[TestMethod]
 		public void CreateQueue()
 		{
-			var sqs = new NAV.AWS.SQS.Service(AWS.Credentials);
+			var sqs = new Service(AWS.Credentials);
 			var queue = sqs.CreateQueue(_localTestContext.Properties["QueueName"].ToString());
 			Assert.IsTrue(!sqs.ErrorExists, sqs.ErrorMessage);
 			Assert.IsTrue(queue.Name.Equals(_localTestContext.Properties["QueueName"].ToString(), StringComparison.OrdinalIgnoreCase));
@@ -41,8 +41,8 @@ namespace NAV.AWS.Tests
 		[TestMethod]
 		public void SendMessage()
 		{
-			var sqs = new NAV.AWS.SQS.Service(AWS.Credentials);
-			var queue = _localTestContext.Properties["Queue"] as NAV.AWS.SQS.Queue;
+			var sqs = new Service(AWS.Credentials);
+			var queue = _localTestContext.Properties["Queue"] as Queue;
 			Assert.IsNotNull(queue);
 			var message = new Message(queue) { Body = "Test Message", DelaySeconds = 0 };
 			sqs.SendMessage(message);

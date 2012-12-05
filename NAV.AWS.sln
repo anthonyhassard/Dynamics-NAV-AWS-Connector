@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAV.AWS.Tests", "NAV.AWS.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAV.AWS.SQS", "NAV.AWS.SQS\NAV.AWS.SQS.csproj", "{51B36D7F-3F81-412E-B871-E408FFD2B7C5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAV.AWS.ObjectMonitor", "NAV.AWS.ObjectMonitor\NAV.AWS.ObjectMonitor.csproj", "{C12C3B60-1E8B-4BB3-B799-74343AD26ABD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{51B36D7F-3F81-412E-B871-E408FFD2B7C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51B36D7F-3F81-412E-B871-E408FFD2B7C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51B36D7F-3F81-412E-B871-E408FFD2B7C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C12C3B60-1E8B-4BB3-B799-74343AD26ABD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C12C3B60-1E8B-4BB3-B799-74343AD26ABD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C12C3B60-1E8B-4BB3-B799-74343AD26ABD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C12C3B60-1E8B-4BB3-B799-74343AD26ABD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

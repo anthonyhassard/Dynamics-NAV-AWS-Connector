@@ -1,0 +1,40 @@
+﻿The idea here is to build a windows service that monitors an NAV SQL database being used for development
+and automatically exports object changes as they occur.  The exported objects will be sent to an AWS queue
+and another service will periodically pull objects from the queue and process them into source control.
+Furthermore, the queue will also be monitored by a client-side service running on the developer's machine.
+This service will notify a developer (presumably one earmarked as the developer-in-charge of handling objects
+for a certain database) that changes exist and give them an easy method to import the objects (either overwriting
+them or merging them depending on the situation).  The ability to roll-back an object will also be available,
+as well as branching and merging as we are familiar with in typical source control packages.
+
+See the following articles on SQL Server Change Tracking:
+
+http://www.codeproject.com/Articles/338183/SQL-Server-Change-Tracking-on-Table-Without-Trigge
+http://msdn.microsoft.com/en-us/library/bb964713(v=sql.105).aspx
+http://msdn.microsoft.com/en-us/library/cc280358(v=sql.105).aspx
+
+-----------------------------------------------------------------------------------------------------------------------
+
+SELECT * FROM Object 
+LEFT OUTER JOIN 
+CHANGETABLE(CHANGES Object, 1) CT
+ON CT.Type = Object.Type AND CT.[Company Name] = Object.[Company Name] AND CT.ID = Object.ID
+
+select CHANGE_TRACKING_CURRENT_VERSION();
+select CHANGE_TRACKING_MIN_VALID_VERSION(OBJECT_ID('Object'));
+select * from changetable(changes Object, 0) CT WHERE CT.Type > 0;
+
+-----------------------------------------------------------------------------------------------------------------------
+
+NAV Object Types:
+Table = 1
+Form = 2
+Report = 3
+Dataport = 4
+Codeunit = 5
+XMLport = 6
+MenuSuite = 7
+Page = 8
+Query = 9
+
+-----------------------------------------------------------------------------------------------------------------------
