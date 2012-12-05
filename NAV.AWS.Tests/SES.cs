@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NAV.AWS.SES;
 
@@ -14,62 +12,6 @@ namespace NAV.AWS.Tests
 	public class SES
 	{
 		/// <summary>
-		///     The field use by the <see cref="NAV.AWS.Tests.SES.Credentials" /> property.
-		/// </summary>
-		private static Credentials _credentials;
-
-
-		/// <summary>
-		///     A <see langword="static" /> TestContext object for use throughout the test class.
-		/// </summary>
-		/// <value>
-		///     The test context.
-		/// </value>
-		public static TestContext TestContext { get; set; }
-
-
-		/// <summary>
-		///     A <see langword="static" /> read-only <see cref="Credentials" /> object providing easy access to the AWS keys
-		///     for all tests in the class.
-		/// </summary>
-		/// <value>
-		///     The credentials.
-		/// </value>
-		public static Credentials Credentials
-		{
-			get
-			{
-				if (_credentials == null)
-				{
-					string accessKey = string.Empty;
-					using (var secretKey = new SecureString())
-					{
-						using (var keyFile = new BinaryReader(File.OpenRead(TestContext.Properties["KeyFile"].ToString())))
-						{
-							accessKey = keyFile.ReadChars(20).Aggregate(accessKey, (current, c) => current + c);
-							foreach (char c in keyFile.ReadChars(40))
-								secretKey.AppendChar(c);
-						}
-						_credentials = new Credentials(accessKey, secretKey.Copy());
-					}
-				}
-				return _credentials;
-			}
-		}
-
-
-		/// <summary>
-		///     Clean up and dispose objects after the tests are finished.
-		/// </summary>
-		[ClassCleanup]
-		public static void Cleanup()
-		{
-			if (_credentials != null)
-				_credentials.Dispose();
-		}
-
-
-		/// <summary>
 		///     <see cref="Initialize" /> the test class and add the AWS key file to the TestContext properties dictionary.
 		/// </summary>
 		/// <remarks>
@@ -80,11 +22,19 @@ namespace NAV.AWS.Tests
 		[ClassInitialize]
 		public static void Initialize(TestContext context)
 		{
-			TestContext = context;
-			TestContext.Properties.Add("KeyFile", @"C:\AWS\Key.dat");
-			TestContext.Properties.Add("HTMLFile", @"C:\AWS\Email.html");
-			TestContext.Properties.Add("AttachmentFile", @"C:\AWS\Sample.pdf");
+			_localTestContext = context;
+			_localTestContext.Properties.Add("AttachmentFile", @"C:\AWS\Sample.pdf");
+			_localTestContext.Properties.Add("HTMLFile", @"C:\AWS\Email.html");
 		}
+
+
+		/// <summary>
+		///     A <see langword="static" /> TestContext object for use in just this test class.
+		/// </summary>
+		/// <value>
+		///     The test context.
+		/// </value>
+		private static TestContext _localTestContext;
 
 
 		/// <summary>
@@ -93,16 +43,16 @@ namespace NAV.AWS.Tests
 		[TestMethod]
 		public void SendHtmlEmail()
 		{
-			var ses = new Email(Credentials);
+			var ses = new Email(AWS.Credentials);
 			Assert.IsTrue(
 				ses.Send(
-					"anthonyhassard@yahoo.com",
-					"anthonyhassard@yahoo.com",
+					@"anthonyhassard@yahoo.com",
+					@"anthonyhassard@yahoo.com",
 					"Test HTML Message",
-					File.ReadAllText(TestContext.Properties["HTMLFile"].ToString()),
+					File.ReadAllText(_localTestContext.Properties["HTMLFile"].ToString()),
 					true));
 			Assert.IsTrue(!string.IsNullOrWhiteSpace(ses.MessageId));
-			Console.Out.WriteLine("Message ID: {0}", ses.MessageId);
+			Console.Out.WriteLine("Message AwsAssignedId: {0}", ses.MessageId);
 		}
 
 
@@ -112,17 +62,17 @@ namespace NAV.AWS.Tests
 		[TestMethod]
 		public void SendPlainTextEmail()
 		{
-			var ses = new Email(Credentials);
+			var ses = new Email(AWS.Credentials);
 			Assert.IsTrue(
 				ses.Send(
-					"anthonyhassard@yahoo.com",
-					"anthonyhassard@yahoo.com",
+					@"anthonyhassard@yahoo.com",
+					@"anthonyhassard@yahoo.com",
 					"Test Message",
 					"Sent from a test method in the NAV.AWS framework",
 					false),
 				ses.ErrorMessage);
 			Assert.IsTrue(!string.IsNullOrWhiteSpace(ses.MessageId));
-			Console.Out.WriteLine("Message ID: {0}", ses.MessageId);
+			Console.Out.WriteLine("Message AwsAssignedId: {0}", ses.MessageId);
 		}
 
 
@@ -132,16 +82,16 @@ namespace NAV.AWS.Tests
 		[TestMethod]
 		public void SendRawEmail()
 		{
-			var ses = new Email(Credentials);
-			ses.AddToAddress("anthonyhassard@yahoo.com");
-			ses.FromAddress = "anthonyhassard@yahoo.com";
-			ses.AttachmentFilePath = TestContext.Properties["AttachmentFile"].ToString();
+			var ses = new Email(AWS.Credentials);
+			ses.AddToAddress(@"anthonyhassard@yahoo.com");
+			ses.FromAddress = @"anthonyhassard@yahoo.com";
+			ses.AttachmentFilePath = _localTestContext.Properties["AttachmentFile"].ToString();
 			ses.HTML = true;
-			ses.MessageBody = File.ReadAllText(TestContext.Properties["HTMLFile"].ToString());
+			ses.MessageBody = File.ReadAllText(_localTestContext.Properties["HTMLFile"].ToString());
 			ses.MessageSubject = "Test HTML Message (With PDF Attachment)";
 			Assert.IsTrue(ses.Send());
 			Assert.IsTrue(!string.IsNullOrWhiteSpace(ses.MessageId));
-			Console.Out.WriteLine("Message ID: {0}", ses.MessageId);
+			Console.Out.WriteLine("Message AwsAssignedId: {0}", ses.MessageId);
 		}
 	}
 }

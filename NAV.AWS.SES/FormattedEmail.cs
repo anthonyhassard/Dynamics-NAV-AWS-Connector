@@ -40,8 +40,11 @@ namespace NAV.AWS.SES
 					Subject = new Content(_email.MessageSubject)
 				};
 				var request = new SendEmailRequest(_email.FromAddress, _email.Destination, message);
-				var client = new Client(_email.Credentials);
-				_email.MessageId = client.SendFormattedEmail(request);
+				using (var client = new Client(_email.Credentials))
+				{
+					_email.MessageId = client.SendFormattedEmail(request);
+				}
+
 				return !_email.ErrorExists;
 			}
 			catch (AmazonSimpleEmailServiceException ex)

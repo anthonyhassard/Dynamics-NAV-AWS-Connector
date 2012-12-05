@@ -14,7 +14,7 @@ namespace NAV.AWS.SES
 		/// <summary>
 		///     A read only field for <see langword="internal" /> access to the Amazon SES client.
 		/// </summary>
-		private readonly AmazonSimpleEmailService _awsClient;
+		private readonly AmazonSimpleEmailService _sesClient;
 
 
 		/// <summary>
@@ -32,7 +32,7 @@ namespace NAV.AWS.SES
 		internal Client(Credentials credentials)
 		{
 			_awsCredentials = new BasicAWSCredentials(credentials.AccessKey, credentials.SecureKey);
-			_awsClient = AWSClientFactory.CreateAmazonSimpleEmailServiceClient(_awsCredentials);
+			_sesClient = AWSClientFactory.CreateAmazonSimpleEmailServiceClient(_awsCredentials);
 		}
 
 
@@ -41,8 +41,8 @@ namespace NAV.AWS.SES
 		/// </summary>
 		public void Dispose()
 		{
-			if (_awsClient != null)
-				_awsClient.Dispose();
+			if (_sesClient != null)
+				_sesClient.Dispose();
 			if (_awsCredentials != null)
 				_awsCredentials.Dispose();
 		}
@@ -59,7 +59,7 @@ namespace NAV.AWS.SES
 		/// </returns>
 		internal string SendFormattedEmail(SendEmailRequest request)
 		{
-			SendEmailResponse response = _awsClient.SendEmail(request);
+			SendEmailResponse response = _sesClient.SendEmail(request);
 			return response != null && response.SendEmailResult != null ? response.SendEmailResult.MessageId : string.Empty;
 		}
 
@@ -75,7 +75,7 @@ namespace NAV.AWS.SES
 		/// </returns>
 		internal string SendRawEmail(SendRawEmailRequest request)
 		{
-			SendRawEmailResponse response = _awsClient.SendRawEmail(request);
+			SendRawEmailResponse response = _sesClient.SendRawEmail(request);
 			return response != null && response.SendRawEmailResult != null ? response.SendRawEmailResult.MessageId : string.Empty;
 		}
 	}

@@ -110,8 +110,10 @@ namespace NAV.AWS.SES
 					Source = _email.FromAddress
 				};
 
-				var client = new Client(_email.Credentials);
-				_email.MessageId = client.SendRawEmail(request);
+				using (var client = new Client(_email.Credentials))
+				{
+					_email.MessageId = client.SendRawEmail(request);
+				}
 
 				return !_email.ErrorExists;
 			}

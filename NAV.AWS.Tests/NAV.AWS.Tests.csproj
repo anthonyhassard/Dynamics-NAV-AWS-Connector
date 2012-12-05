@@ -52,8 +52,14 @@
   <ItemGroup>
     <Compile Include="SES.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SQS.cs" />
+    <Compile Include="AWS.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NAV.AWS.SQS\NAV.AWS.SQS.csproj">
+      <Project>{51b36d7f-3f81-412e-b871-e408ffd2b7c5}</Project>
+      <Name>NAV.AWS.SQS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NAV.AWS\NAV.AWS.csproj">
       <Project>{4f36c159-401c-46a3-ad06-d8edda8122f4}</Project>
       <Name>NAV.AWS</Name>
